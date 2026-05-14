@@ -508,7 +508,7 @@
                     let pts = evalLogic(val, input.dataset.rule);
                     if (pts > 0) {
                         totalScore += pts;
-                        riskFactors.push(`${input.dataset.label}: ${val} (${pts} б.)`);
+                        riskFactors.push(`${input.dataset.label}: ${val}`); // <-- Убраны баллы
                     }
                 }
             }
@@ -524,7 +524,7 @@
                 let pts = parseInt(parts[0]);
                 if (pts > 0) {
                     totalScore += pts;
-                    riskFactors.push(`${select.dataset.label}: ${parts[1]} (${pts} б.)`);
+                    riskFactors.push(`${select.dataset.label}: ${parts[1]}`); // <-- Убраны баллы
                     // Спец. логика: гнойное/обильное по дренажу
                     if (select.id === 'd_char' && pts >= 2) riskFactors.push(`Внимание: опасное отделяемое по дренажу`);
                     if (select.dataset.label === 'Отделяемое из раны' && pts >= 2) riskFactors.push(`Внимание: опасное отделяемое из раны`);
@@ -539,7 +539,7 @@
             
             let pts = parseInt(cb.value);
             totalScore += pts;
-            riskFactors.push(`${cb.dataset.label} (${pts} б.)`);
+            riskFactors.push(`${cb.dataset.label}`); // <-- Убраны баллы
         });
 
         // 4. Ручные SOS-чекбоксы
