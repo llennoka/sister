@@ -1,441 +1,632 @@
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шкала раннего прогнозирования риска</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --text-muted: #4b5563;
+            --border-color: #d1d5db;
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --red: #ef4444;
+            --dark-red: #991b1b;
+        }
 
-<style>
-/* Базовые стили и контейнер на 8 колонок */
-.mc-wrapper {
-    max-width: 760px;
-    margin: 0 auto;
-    font-family: 'Inter', sans-serif;
-    color: #1a1a1a;
-    line-height: 1.5;
-    background: #ffffff;
-    padding: 20px;
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
 
-.mc-wrapper * {
-    box-sizing: border-box;
-}
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
 
-.mc-title {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 24px;
-    border-bottom: 2px solid #eaeaea;
-    padding-bottom: 12px;
-}
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--bg-color);
+        }
 
-.mc-section {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 24px;
-}
+        .section {
+            margin-bottom: 32px;
+            padding: 24px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
 
-.mc-section h3 {
-    margin-top: 0;
-    margin-bottom: 16px;
-    font-size: 18px;
-    color: #374151;
-}
+        .section h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-.mc-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 16px;
-}
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
 
-.mc-field {
-    flex: 1 1 calc(50% - 8px);
-    min-width: 200px;
-    display: flex;
-    flex-direction: column;
-}
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
 
-.mc-field.full {
-    flex: 1 1 100%;
-}
+        .field.full {
+            grid-column: 1 / -1;
+        }
 
-.mc-label {
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 6px;
-    color: #4b5563;
-}
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
 
-.mc-input, .mc-select {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    background: #fff;
-    transition: border-color 0.2s;
-}
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+        }
 
-.mc-input:focus, .mc-select:focus {
-    outline: none;
-    border-color: #3b82f6;
-}
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
 
-.mc-checkbox-group, .mc-radio-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-}
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 8px 0;
+        }
 
-.mc-checkbox-label, .mc-radio-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    cursor: pointer;
-}
+        .radio-group.row, .checkbox-group.row {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
 
-.mc-btn {
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: background 0.2s;
-    width: 100%;
-}
+        .check-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+            color: var(--text-main);
+        }
 
-.mc-btn:hover { background: #1d4ed8; }
-.mc-btn-secondary { background: #e5e7eb; color: #374151; margin-top: 12px; }
-.mc-btn-secondary:hover { background: #d1d5db; }
+        .sos-section {
+            border-color: #fca5a5;
+            background: #fef2f2;
+        }
 
-/* Итоговое окно */
-#mc-result { display: none; }
-.mc-card {
-    border-radius: 8px;
-    padding: 24px;
-    margin-bottom: 24px;
-    border-left: 6px solid;
-}
-.mc-card.risk-low { border-color: #10b981; background: #ecfdf5; }
-.mc-card.risk-mod { border-color: #f59e0b; background: #fffbeb; }
-.mc-card.risk-high { border-color: #ef4444; background: #fef2f2; }
-.mc-card.risk-sos { border-color: #991b1b; background: #fef2f2; color: #991b1b; }
+        .sos-section h3 {
+            color: var(--dark-red);
+        }
 
-.mc-result-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    font-size: 14px;
-    margin-bottom: 20px;
-}
-.mc-result-grid div span { font-weight: 600; }
+        .sos-check {
+            color: var(--dark-red);
+            font-weight: 600;
+        }
 
-.mc-factors, .mc-recs { margin-top: 16px; font-size: 14px; }
-.mc-factors ul, .mc-recs ul { margin: 8px 0 0 20px; padding: 0; }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
 
-/* Стили для печати (PDF) */
-@media print {
-    body * { visibility: hidden; }
-    .mc-wrapper, .mc-wrapper * { visibility: visible; }
-    .mc-wrapper { position: absolute; left: 0; top: 0; width: 100%; max-width: 100%; padding: 0; }
-    .mc-btn, .mc-btn-secondary { display: none !important; }
-    .mc-section { border: none; padding: 0; margin-bottom: 12px; page-break-inside: avoid; }
-    #mc-form { display: block !important; } /* Показывать анкету при печати */
-}
-</style>
+        button {
+            flex: 1;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
 
-<div class="mc-wrapper">
-    <h2 class="mc-title">Клинико-сестринская оценка риска осложнений</h2>
-    
-    <form id="mc-form">
-        <div class="mc-section">
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        /* Итоговое окно */
+        #result-screen {
+            display: none;
+        }
+
+        .result-card {
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border-left: 8px solid;
+            background: #fff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .risk-low { border-color: var(--green); background: #ecfdf5; }
+        .risk-mod { border-color: var(--yellow); background: #fffbeb; }
+        .risk-high { border-color: var(--red); background: #fef2f2; }
+        .risk-sos { border-color: var(--dark-red); background: #fef2f2; color: var(--dark-red); }
+
+        .result-header {
+            font-size: 28px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            font-size: 15px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .info-grid span { font-weight: 600; }
+
+        .factors-box, .recs-box {
+            margin-top: 20px;
+        }
+
+        .factors-box strong, .recs-box strong {
+            font-size: 16px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 15px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        /* Для печати (PDF) */
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; max-width: 100%; padding: 0; }
+            .btn-group { display: none !important; }
+            .section { border: none; padding: 10px 0; margin-bottom: 10px; page-break-inside: avoid; }
+            #form-screen { display: block !important; } /* Показываем анкету при печати */
+            #result-screen { page-break-before: always; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 id="main-title">Клинико-сестринская оценка риска осложнений</h2>
+
+    <form id="form-screen">
+        
+        <div class="section">
             <h3>Данные пациента</h3>
-            <div class="mc-row">
-                <div class="mc-field full"><label class="mc-label">ФИО пациента</label><input type="text" id="p_name" class="mc-input" required></div>
-                <div class="mc-field"><label class="mc-label">Номер палаты</label><input type="text" id="p_room" class="mc-input" required></div>
-                <div class="mc-field"><label class="mc-label">Возраст</label><input type="number" id="p_age" class="mc-input" required></div>
-                <div class="mc-field full"><label class="mc-label">Диагноз</label><input type="text" id="p_diag" class="mc-input" required></div>
-                <div class="mc-field"><label class="mc-label">Дата операции</label><input type="date" id="p_date" class="mc-input" required></div>
-                <div class="mc-field"><label class="mc-label">Сутки после операции</label>
-                    <select id="p_days" class="mc-select">
-                        <option value="1">1 сутки</option><option value="2">2 сутки</option><option value="3">3 сутки</option><option value="4-5">4–5 сутки</option><option value="6-7">6–7 сутки</option>
+            <div class="grid">
+                <div class="field full"><label>ФИО пациента</label><input type="text" id="p_name" required></div>
+                <div class="field"><label>Номер палаты</label><input type="text" id="p_room" required></div>
+                <div class="field"><label>Возраст</label><input type="number" id="p_age" required></div>
+                <div class="field full"><label>Диагноз</label><input type="text" id="p_diag" required></div>
+                <div class="field"><label>Дата операции</label><input type="date" id="p_date" required></div>
+                <div class="field"><label>Сутки после операции</label>
+                    <select id="p_days">
+                        <option>1 сутки</option><option>2 сутки</option><option>3 сутки</option><option>4–5 сутки</option><option>6–7 сутки</option>
                     </select>
                 </div>
-                <div class="mc-field"><label class="mc-label">Тип операции</label>
-                    <div class="mc-radio-group">
-                        <label class="mc-radio-label"><input type="radio" name="p_type" value="Плановая" checked> Плановая</label>
-                        <label class="mc-radio-label"><input type="radio" name="p_type" value="Экстренная"> Экстренная</label>
+                <div class="field"><label>Тип операции</label>
+                    <div class="radio-group row">
+                        <label class="check-label"><input type="radio" name="p_type" value="Плановая" checked> Плановая</label>
+                        <label class="check-label"><input type="radio" name="p_type" value="Экстренная"> Экстренная</label>
                     </div>
                 </div>
-                <div class="mc-field"><label class="mc-label">Наличие дренажей</label>
-                    <div class="mc-radio-group">
-                        <label class="mc-radio-label"><input type="radio" name="p_drains" value="no" checked onchange="toggleDrains()"> Нет</label>
-                        <label class="mc-radio-label"><input type="radio" name="p_drains" value="yes" onchange="toggleDrains()"> Да</label>
+                <div class="field"><label>Тип вмешательства</label>
+                    <select id="p_int_type">
+                        <option>Лапароскопическое</option><option>Открытое</option><option>Гнойно-хирургическое</option><option>Другое</option>
+                    </select>
+                </div>
+                <div class="field"><label>Длительность операции (мин)</label><input type="number" id="p_dur"></div>
+                
+                <div class="field full"><label>Сопутствующие заболевания</label>
+                    <div class="checkbox-group row">
+                        <label class="check-label"><input type="checkbox" id="dz_diab"> Сахарный диабет</label>
+                        <label class="check-label"><input type="checkbox" id="dz_cvd"> Сердечно-сосудистая патология</label>
+                        <label class="check-label"><input type="checkbox" id="dz_obese"> Ожирение</label>
+                        <label class="check-label"><input type="checkbox" id="dz_copd"> Хр. заболевание легких</label>
+                        <label class="check-label"><input type="checkbox" id="dz_onco"> Онкология</label>
+                    </div>
+                </div>
+
+                <div class="field full"><label>Наличие дренажей</label>
+                    <div class="radio-group row">
+                        <label class="check-label"><input type="radio" name="p_drains" value="no" checked onchange="toggleDrains()"> Нет</label>
+                        <label class="check-label"><input type="radio" name="p_drains" value="yes" onchange="toggleDrains()"> Да</label>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="mc-section" id="drains-block" style="display: none;">
+        <div class="section" id="drains-block" style="display: none;">
             <h3>Оценка дренажей</h3>
-            <div class="mc-row">
-                <div class="mc-field"><label class="mc-label">Характер отделяемого</label>
-                    <select id="d_char" class="mc-select" data-label="Характер отделяемого (дренаж)">
-                        <option value="0|Нет">Нет / Серозное (0 б.)</option>
-                        <option value="1|Геморрагическое">Геморрагическое (1 б.)</option>
-                        <option value="2|Обильное геморрагическое">Обильное геморрагическое (2 б.)</option>
-                        <option value="3|Гнойное">Гнойное (3 б.)</option>
+            <div class="grid">
+                <div class="field"><label>Количество дренажей</label><input type="number" id="d_qty" value="1"></div>
+                <div class="field"><label>Характер отделяемого</label>
+                    <select id="d_char" class="val-select" data-label="Характер отделяемого (дренаж)">
+                        <option value="0|Нет">Нет / Серозное</option>
+                        <option value="1|Геморрагическое">Геморрагическое</option>
+                        <option value="2|Обильное геморрагическое">Обильное геморрагическое</option>
+                        <option value="3|Гнойное">Гнойное</option>
                     </select>
                 </div>
-                <div class="mc-field"><label class="mc-label">Динамика / Осложнения (выберите если есть)</label>
-                    <div class="mc-checkbox-group">
-                        <label class="mc-checkbox-label"><input type="checkbox" id="d_dyn" value="2" data-label="Изменение характера отделяемого"> Изменение характера (2 б.)</label>
-                        <label class="mc-checkbox-label"><input type="checkbox" id="d_inc" value="2" data-label="Резкое увеличение объема"> Резкое увеличение объема (2 б.)</label>
-                        <label class="mc-checkbox-label"><input type="checkbox" id="d_stop" value="2" data-label="Прекращение при ухудшении"> Прекращение при ухудшении (2 б.)</label>
-                        <label class="mc-checkbox-label"><input type="checkbox" id="d_smell" value="2" data-label="Неприятный запах"> Неприятный запах (2 б.)</label>
+                <div class="field full"><label>Осложнения по дренажу (отметьте, если есть)</label>
+                    <div class="checkbox-group row">
+                        <label class="check-label"><input type="checkbox" class="val-check" value="2" data-label="Изменение характера отделяемого"> Изменение характера</label>
+                        <label class="check-label"><input type="checkbox" class="val-check" value="2" data-label="Резкое увеличение объема (дренаж)"> Резкое увеличение объема</label>
+                        <label class="check-label"><input type="checkbox" class="val-check" value="2" data-label="Прекращение при ухудшении"> Прекращение при ухудшении</label>
+                        <label class="check-label"><input type="checkbox" class="val-check" value="2" data-label="Неприятный запах (дренаж)"> Неприятный запах</label>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="mc-section">
-            <h3>Клинические показатели (введите числа)</h3>
-            <div class="mc-row">
-                <div class="mc-field"><label class="mc-label">Температура (°C)</label><input type="number" step="0.1" id="c_temp" class="mc-input val-input" data-label="Температура" data-rule=">=38|2" data-sos=">=39"></div>
-                <div class="mc-field"><label class="mc-label">ЧСС (в мин)</label><input type="number" id="c_hr" class="mc-input val-input" data-label="ЧСС" data-rule=">100|1" data-sos=">120"></div>
-                <div class="mc-field"><label class="mc-label">ЧДД (в мин)</label><input type="number" id="c_rr" class="mc-input val-input" data-label="ЧДД" data-rule=">22|1" data-sos=">=30"></div>
-                <div class="mc-field"><label class="mc-label">АД систол. (мм рт.ст.)</label><input type="number" id="c_sbp" class="mc-input val-input" data-label="Сист. АД" data-rule="<100|1" data-sos="<90"></div>
-                <div class="mc-field"><label class="mc-label">SpO₂ (%)</label><input type="number" id="c_spo2" class="mc-input val-input" data-label="SpO2" data-rule="<94|2" data-sos="<90"></div>
-                <div class="mc-field"><label class="mc-label">Нарушение сознания</label>
-                    <select id="c_cons" class="mc-select" data-label="Нарушение сознания">
-                        <option value="0|Нет">Нет</option><option value="2|Да">Да (2 б.)</option>
+        <div class="section">
+            <h3>Клинические показатели</h3>
+            <div class="grid">
+                <div class="field"><label>Температура (°C)</label><input type="number" step="0.1" class="val-num" data-label="Температура" data-rule=">=38:2" data-sos=">=39.0"></div>
+                <div class="field"><label>ЧСС (в мин)</label><input type="number" class="val-num" data-label="ЧСС" data-rule=">100:1" data-sos=">120"></div>
+                <div class="field"><label>ЧДД (в мин)</label><input type="number" class="val-num" data-label="ЧДД" data-rule=">22:1" data-sos=">=30"></div>
+                <div class="field"><label>Систолическое АД</label><input type="number" class="val-num" data-label="Сист. АД" data-rule="<100:1" data-sos="<90"></div>
+                <div class="field"><label>SpO₂ (%)</label><input type="number" class="val-num" data-label="SpO2" data-rule="<94:2" data-sos="<90"></div>
+                <div class="field"><label>Нарушение сознания</label>
+                    <select class="val-select" data-label="Нарушение сознания">
+                        <option value="0|Нет">Нет</option><option value="2|Да">Да</option>
                     </select>
                 </div>
             </div>
         </div>
 
-        <div class="mc-section">
+        <div class="section">
             <h3>Лабораторные показатели</h3>
-            <div class="mc-row">
-                <div class="mc-field"><label class="mc-label">Лейкоциты (×10⁹/л)</label><input type="number" step="0.1" id="l_wbc" class="mc-input val-input" data-label="Лейкоциты" data-rule="<4|>12|2" data-sos="<3|>15"></div>
-                <div class="mc-field"><label class="mc-label">СРБ (мг/л)</label><input type="number" step="0.1" id="l_crp" class="mc-input val-input" data-label="СРБ" data-rule=">60|2" data-sos=">100"></div>
-                <div class="mc-field"><label class="mc-label">Прокальцитонин (нг/мл)</label><input type="number" step="0.01" id="l_pct" class="mc-input val-input" data-label="Прокальцитонин" data-rule=">=0.5|3" data-sos=">=2.0"></div>
-                <div class="mc-field"><label class="mc-label">Гемоглобин (г/л)</label><input type="number" id="l_hb" class="mc-input val-input" data-label="Гемоглобин" data-rule="<100|2" data-sos="<80"></div>
-                <div class="mc-field"><label class="mc-label">Креатинин (мкмоль/л)</label><input type="number" id="l_creat" class="mc-input val-input" data-label="Креатинин" data-rule=">120|1" data-sos=">150"></div>
-                <div class="mc-field"><label class="mc-label">Лактат (ммоль/л)</label><input type="number" step="0.1" id="l_lac" class="mc-input val-input" data-label="Лактат" data-rule=">=2.5|2" data-sos=">=4"></div>
+            <div class="grid">
+                <div class="field"><label>Лейкоциты (×10⁹/л)</label><input type="number" step="0.1" class="val-num" data-label="Лейкоциты" data-rule="<4:2,>12:2" data-sos="<3,>15"></div>
+                <div class="field"><label>СРБ (мг/л)</label><input type="number" step="0.1" class="val-num" data-label="СРБ" data-rule=">60:2" data-sos=">100"></div>
+                <div class="field"><label>Прокальцитонин (нг/мл)</label><input type="number" step="0.01" class="val-num" data-label="Прокальцитонин" data-rule=">=0.5:3" data-sos=">=2.0"></div>
+                <div class="field"><label>Гемоглобин (г/л)</label><input type="number" class="val-num" data-label="Гемоглобин" data-rule="<100:2" data-sos="<80"></div>
+                <div class="field"><label>Креатинин (мкмоль/л)</label><input type="number" class="val-num" data-label="Креатинин" data-rule=">120:1" data-sos=">150"></div>
+                <div class="field"><label>Лактат (ммоль/л)</label><input type="number" step="0.1" class="val-num" data-label="Лактат" data-rule=">=2.5:2" data-sos=">=4.0"></div>
+                <div class="field"><label>D-димер (нг/мл)</label><input type="number" class="val-num" data-label="D-димер" data-rule=">1000:1" data-sos=">3000"></div>
             </div>
         </div>
 
-        <div class="mc-section">
+        <div class="section">
             <h3>Сестринский блок</h3>
-            <div class="mc-row">
-                <div class="mc-field"><label class="mc-label">Боль по ВАШ (0-10)</label><input type="number" min="0" max="10" id="n_vas" class="mc-input val-input" data-label="Боль по ВАШ" data-rule=">=7|2|>=4|1" data-sos=">=9"></div>
-                <div class="mc-field"><label class="mc-label">Состояние повязки</label>
-                    <select id="n_dress" class="mc-select" data-label="Повязка">
-                        <option value="0|Сухая">Сухая (0 б.)</option><option value="1|Умеренно промокшая">Умеренно промокшая (1 б.)</option><option value="2|Обильно промокшая">Обильно промокшая (2 б.)</option>
+            <div class="grid">
+                <div class="field"><label>Боль по ВАШ (0-10)</label><input type="number" class="val-num" data-label="Боль по ВАШ" data-rule=">=4:1,>=7:2" data-sos=">=9"></div>
+                <div class="field"><label>Усиление боли в динамике</label><select class="val-select" data-label="Усиление боли"><option value="0|Нет">Нет</option><option value="2|Да">Да</option></select></div>
+                <div class="field"><label>Эффект обезболивания</label><select class="val-select" data-label="Эффект обезболивания"><option value="0|Достаточный">Достаточный</option><option value="1|Недостаточный">Недостаточный</option></select></div>
+                
+                <div class="field full"><label>Послеоперационная рана (отметьте, если есть)</label>
+                    <div class="checkbox-group row">
+                        <label class="check-label"><input type="checkbox" class="val-check" value="2" data-label="Гиперемия раны"> Гиперемия</label>
+                        <label class="check-label"><input type="checkbox" class="val-check" value="2" data-label="Отек раны"> Отек</label>
+                        <label class="check-label"><input type="checkbox" class="val-check" value="2" data-label="Инфильтрация"> Инфильтрация</label>
+                        <label class="check-label"><input type="checkbox" class="val-check" value="1" data-label="Локальная гипертермия"> Локальная гипертермия</label>
+                        <label class="check-label"><input type="checkbox" class="val-check" value="1" data-label="Выраженная болезненность"> Выраженная болезненность</label>
+                        <label class="check-label"><input type="checkbox" class="val-check" value="2" data-label="Расхождение краев"> Расхождение краев</label>
+                    </div>
+                </div>
+
+                <div class="field"><label>Состояние повязки</label>
+                    <select class="val-select" data-label="Повязка">
+                        <option value="0|Сухая">Сухая</option><option value="1|Умеренно промокшая">Умеренно промокшая</option><option value="2|Обильно промокшая">Обильно промокшая</option>
                     </select>
                 </div>
-                <div class="mc-field"><label class="mc-label">Отделяемое из раны</label>
-                    <select id="n_wound" class="mc-select" data-label="Отделяемое из раны">
-                        <option value="0|Нет/Серозное">Нет / Серозное (0 б.)</option><option value="1|Геморрагическое">Геморрагическое (1 б.)</option><option value="2|Обильное геморр.">Обильное геморр. (2 б.)</option><option value="3|Гнойное">Гнойное (3 б.)</option>
+                <div class="field"><label>Повторное промокание повязки</label><select class="val-select" data-label="Повторное промокание"><option value="0|Нет">Нет</option><option value="2|Да">Да</option></select></div>
+                
+                <div class="field"><label>Отделяемое из раны</label>
+                    <select class="val-select" data-label="Отделяемое из раны">
+                        <option value="0|Нет/Серозное">Нет / Серозное</option><option value="1|Геморрагическое">Геморрагическое</option><option value="2|Обильное геморрагическое">Обильное геморр.</option><option value="3|Гнойное">Гнойное</option>
                     </select>
                 </div>
-                <div class="mc-field"><label class="mc-label">Мобилизация</label>
-                    <select id="n_mob" class="mc-select" data-label="Мобилизация">
-                        <option value="0|Самостоятельная">Самостоятельная (0 б.)</option><option value="1|Ограниченная">Ограниченная (1 б.)</option><option value="2|Не мобилизируется">Не мобилизируется (2 б.)</option>
+                
+                <div class="field"><label>Мобилизация</label>
+                    <select class="val-select" data-label="Мобилизация">
+                        <option value="0|Самостоятельная">Самостоятельная</option><option value="1|Ограниченная">Ограниченная</option><option value="2|Не мобилизируется">Не мобилизируется</option>
                     </select>
                 </div>
+                <div class="field"><label>Дыхательная гимнастика</label><select class="val-select" data-label="Дыхательная гимнастика"><option value="0|Выполняет">Выполняет</option><option value="1|Не выполняет">Не выполняет</option></select></div>
+            </div>
+            
+            <h4 style="margin-top:24px; margin-bottom:12px;">Общее состояние</h4>
+            <div class="grid">
+                <div class="field"><label>Сон</label><select class="val-select" data-label="Сон"><option value="0|Сохранен">Сохранен</option><option value="1|Нарушен">Нарушен</option><option value="2|Резко нарушен">Резко нарушен</option></select></div>
+                <div class="field"><label>Тревожность</label><select class="val-select" data-label="Тревожность"><option value="0|Нет">Нет</option><option value="1|Умеренная">Умеренная</option><option value="2|Выраженная">Выраженная</option></select></div>
+                <div class="field"><label>Слабость</label><select class="val-select" data-label="Слабость"><option value="0|Нет">Нет</option><option value="1|Умеренная">Умеренная</option><option value="2|Нарастающая">Нарастающая</option></select></div>
+                <div class="field"><label>Аппетит</label><select class="val-select" data-label="Аппетит"><option value="0|Сохранен">Сохранен</option><option value="1|Снижен">Снижен</option><option value="2|Отсутствует">Отсутствует</option></select></div>
+                <div class="field"><label>Диурез</label><select class="val-select" data-label="Диурез"><option value="0|Нормальный">Нормальный</option><option value="1|Снижен">Снижен</option><option value="2|Олигурия">Олигурия</option></select></div>
+                <div class="field"><label>Стул</label><select class="val-select" data-label="Стул"><option value="0|Нормальный">Нормальный</option><option value="1|Задержка">Задержка</option><option value="1|Диарея">Диарея</option></select></div>
+                <div class="field"><label>Комплаентность</label><select class="val-select" data-label="Комплаентность"><option value="0|Соблюдает">Соблюдает</option><option value="1|Частично">Частично соблюдает</option><option value="2|Не соблюдает">Не соблюдает</option></select></div>
             </div>
         </div>
 
-        <div class="mc-section" style="border-color: #ef4444; background: #fff5f5;">
+        <div class="section sos-section">
             <h3>🚨 SOS-признаки (отметьте, если есть)</h3>
-            <div class="mc-checkbox-group">
-                <label class="mc-checkbox-label" style="color: #991b1b; font-weight: 600;"><input type="checkbox" class="sos-check" value="Активное кровотечение"> Активное кровотечение</label>
-                <label class="mc-checkbox-label" style="color: #991b1b; font-weight: 600;"><input type="checkbox" class="sos-check" value="Подозрение на сепсис"> Подозрение на сепсис</label>
-                <label class="mc-checkbox-label" style="color: #991b1b; font-weight: 600;"><input type="checkbox" class="sos-check" value="Подозрение на ТЭЛА"> Подозрение на ТЭЛА</label>
-                <label class="mc-checkbox-label" style="color: #991b1b; font-weight: 600;"><input type="checkbox" class="sos-check" value="Резкое ухудшение"> Резкое ухудшение состояния</label>
+            <div class="checkbox-group row">
+                <label class="check-label sos-check"><input type="checkbox" class="manual-sos" value="Активное кровотечение"> Активное кровотечение</label>
+                <label class="check-label sos-check"><input type="checkbox" class="manual-sos" value="Подозрение на сепсис"> Подозрение на сепсис</label>
+                <label class="check-label sos-check"><input type="checkbox" class="manual-sos" value="Подозрение на ТЭЛА"> Подозрение на ТЭЛА</label>
+                <label class="check-label sos-check"><input type="checkbox" class="manual-sos" value="Резкое ухудшение состояния"> Резкое ухудшение состояния</label>
             </div>
         </div>
 
-        <button type="button" class="mc-btn" onclick="calculateRisk()">Рассчитать риск</button>
+        <div class="btn-group">
+            <button type="button" class="btn-primary" onclick="calculateRisk()">Рассчитать риск</button>
+        </div>
     </form>
 
-    <div id="mc-result">
-        <h2 class="mc-title">Результат оценки</h2>
-        <div class="mc-card" id="res_card">
-            <h3 id="res_title" style="margin-top:0;"></h3>
-            <div class="mc-result-grid">
+    <div id="result-screen">
+        <div class="result-card" id="res_card">
+            <h3 class="result-header" id="res_title"></h3>
+            
+            <div class="info-grid">
                 <div>Пациент: <span id="out_name"></span></div>
                 <div>Палата: <span id="out_room"></span></div>
                 <div>Диагноз: <span id="out_diag"></span></div>
+                <div>Операция: <span id="out_op_type"></span></div>
                 <div>Сутки: <span id="out_days"></span></div>
                 <div>Суммарный балл: <span id="out_score" style="font-size:18px;"></span></div>
+                <div>Дренажи: <span id="out_drains"></span></div>
                 <div>Дата оценки: <span id="out_datetime"></span></div>
             </div>
-            <div class="mc-factors" id="out_factors_box">
+
+            <div class="factors-box" id="factors-container">
                 <strong>Основные факторы риска:</strong>
                 <ul id="out_factors"></ul>
             </div>
-            <div class="mc-recs">
+
+            <div class="recs-box">
                 <strong>Рекомендации:</strong>
                 <ul id="out_recs"></ul>
             </div>
         </div>
-        <button type="button" class="mc-btn" onclick="window.print()">Скачать PDF / Распечатать</button>
-        <button type="button" class="mc-btn mc-btn-secondary" onclick="resetForm()">Новый расчет</button>
+        
+        <div class="btn-group">
+            <button type="button" class="btn-secondary" onclick="window.print()">Скачать PDF / Распечатать</button>
+            <button type="button" class="btn-primary" onclick="resetForm()">Новый расчет</button>
+        </div>
     </div>
+
 </div>
 
 <script>
-function toggleDrains() {
-    const hasDrains = document.querySelector('input[name="p_drains"]:checked').value;
-    document.getElementById('drains-block').style.display = (hasDrains === 'yes') ? 'block' : 'none';
-}
-
-// Вспомогательная функция для парсинга логики (например: ">100|1" или "<4|>12|2")
-function checkCondition(val, ruleStr) {
-    if(!ruleStr || val === '') return false;
-    let parts = ruleStr.split('|');
-    let pts = parseInt(parts[parts.length-1]);
-    let v = parseFloat(val);
-    
-    for(let i=0; i<parts.length-1; i++) {
-        let cond = parts[i];
-        if(cond.startsWith('>=')) { if(v >= parseFloat(cond.slice(2))) return pts; }
-        else if(cond.startsWith('>')) { if(v > parseFloat(cond.slice(1))) return pts; }
-        else if(cond.startsWith('<=')) { if(v <= parseFloat(cond.slice(2))) return pts; }
-        else if(cond.startsWith('<')) { if(v < parseFloat(cond.slice(1))) return pts; }
-        else if(cond.startsWith('==')) { if(v === parseFloat(cond.slice(2))) return pts; }
+    // Скрытие/показ блока дренажей
+    function toggleDrains() {
+        const hasDrains = document.querySelector('input[name="p_drains"]:checked').value;
+        document.getElementById('drains-block').style.display = (hasDrains === 'yes') ? 'block' : 'none';
     }
-    return 0;
-}
 
-function calculateRisk() {
-    let totalScore = 0;
-    let isSOS = false;
-    let riskFactors = [];
-    let sosReasons = [];
+    // Парсер логики чисел (например "<4:2,>12:2")
+    function evalLogic(valStr, rulesStr) {
+        if (!valStr || !rulesStr) return 0;
+        let val = parseFloat(valStr);
+        let rules = rulesStr.split(',');
+        let maxPts = 0;
 
-    // 1. Проверка числовых полей
-    document.querySelectorAll('.val-input').forEach(input => {
-        let val = input.value;
-        if(val !== '') {
-            // Проверка SOS
-            if(input.dataset.sos && checkCondition(val, input.dataset.sos + '|1')) {
-                isSOS = true;
-                sosReasons.push(`${input.dataset.label} (${val})`);
-            }
-            // Проверка баллов (поддерживает множественные условия, берем максимальный)
-            if(input.dataset.rule) {
-                let rules = input.dataset.rule.split('|>='); // Упрощенный парсинг для ВАШ
-                let pts = checkCondition(val, input.dataset.rule);
-                if(pts > 0) {
-                    totalScore += pts;
-                    riskFactors.push(`${input.dataset.label}: ${val} (${pts} б.)`);
+        for (let r of rules) {
+            let parts = r.split(':');
+            let cond = parts[0].trim();
+            let pts = parts.length > 1 ? parseInt(parts[1]) : 1; // Если баллы не указаны, возвращаем 1 (для SOS)
+            
+            let op = cond.replace(/[0-9.-]/g, '').trim();
+            let num = parseFloat(cond.replace(/[^0-9.-]/g, ''));
+            let match = false;
+            
+            if(op === '<') match = val < num;
+            else if(op === '<=') match = val <= num;
+            else if(op === '>') match = val > num;
+            else if(op === '>=') match = val >= num;
+            else if(op === '==') match = val === num;
+
+            if (match && pts > maxPts) maxPts = pts;
+        }
+        return maxPts;
+    }
+
+    function calculateRisk() {
+        let totalScore = 0;
+        let isSOS = false;
+        let riskFactors = [];
+        let sosReasons = [];
+
+        // 1. Проверка числовых инпутов
+        document.querySelectorAll('.val-num').forEach(input => {
+            let val = input.value;
+            if (val !== '') {
+                // Проверка SOS (вернет > 0, если сработало)
+                if (input.dataset.sos && evalLogic(val, input.dataset.sos) > 0) {
+                    isSOS = true;
+                    sosReasons.push(`${input.dataset.label} (${val})`);
+                }
+                // Проверка баллов
+                if (input.dataset.rule) {
+                    let pts = evalLogic(val, input.dataset.rule);
+                    if (pts > 0) {
+                        totalScore += pts;
+                        riskFactors.push(`${input.dataset.label}: ${val} (${pts} б.)`);
+                    }
                 }
             }
-        }
-    });
+        });
 
-    // 2. Проверка селектов (формат value="баллы|текст")
-    document.querySelectorAll('.mc-select').forEach(select => {
-        // Игнорируем дренажи, если они скрыты
-        if(select.id.startsWith('d_') && document.querySelector('input[name="p_drains"]:checked').value === 'no') return;
-        
-        let valArr = select.value.split('|');
-        if(valArr.length === 2) {
-            let pts = parseInt(valArr[0]);
-            if(pts > 0) {
-                totalScore += pts;
-                riskFactors.push(`${select.dataset.label}: ${valArr[1]} (${pts} б.)`);
-                // Логика из ТЗ: гнойное/обильное - фактор риска
-                if(select.id === 'd_char' && pts >= 2) riskFactors.push(`Внимание: опасное отделяемое по дренажу`);
+        // 2. Проверка селектов (формат value="баллы|Текст")
+        document.querySelectorAll('.val-select').forEach(select => {
+            // Пропускаем дренажи, если их нет
+            if (select.id === 'd_char' && document.querySelector('input[name="p_drains"]:checked').value === 'no') return;
+            
+            let parts = select.value.split('|');
+            if (parts.length === 2) {
+                let pts = parseInt(parts[0]);
+                if (pts > 0) {
+                    totalScore += pts;
+                    riskFactors.push(`${select.dataset.label}: ${parts[1]} (${pts} б.)`);
+                    // Спец. логика: гнойное/обильное по дренажу
+                    if (select.id === 'd_char' && pts >= 2) riskFactors.push(`Внимание: опасное отделяемое по дренажу`);
+                    if (select.dataset.label === 'Отделяемое из раны' && pts >= 2) riskFactors.push(`Внимание: опасное отделяемое из раны`);
+                }
             }
-        }
-    });
+        });
 
-    // 3. Проверка чекбоксов (дренажи)
-    if(document.querySelector('input[name="p_drains"]:checked').value === 'yes') {
-        document.querySelectorAll('#drains-block input[type="checkbox"]:checked').forEach(cb => {
+        // 3. Проверка чекбоксов с баллами
+        document.querySelectorAll('.val-check:checked').forEach(cb => {
+            // Пропускаем дренажные чекбоксы, если дренажей нет
+            if (cb.closest('#drains-block') && document.querySelector('input[name="p_drains"]:checked').value === 'no') return;
+            
             let pts = parseInt(cb.value);
             totalScore += pts;
             riskFactors.push(`${cb.dataset.label} (${pts} б.)`);
         });
-    }
 
-    // 4. Ручные SOS кнопки
-    document.querySelectorAll('.sos-check:checked').forEach(cb => {
-        isSOS = true;
-        sosReasons.push(cb.value);
-    });
-
-    // ОПРЕДЕЛЕНИЕ КАТЕГОРИИ И ТЕКСТА
-    let cardClass = "";
-    let titleText = "";
-    let recsHtml = "";
-
-    if (isSOS) {
-        cardClass = "risk-sos";
-        titleText = "🚨 SOS-СОСТОЯНИЕ";
-        recsHtml = "<li>Срочно вызвать лечащего или дежурного врача;</li><li>Не оставлять пациента без наблюдения;</li><li>Проконтролировать витальные показатели;</li><li>Действовать согласно локальным протоколам стационара.</li>";
-        riskFactors.push(`<strong>КРИТИЧЕСКИЕ ПРИЗНАКИ:</strong> ${sosReasons.join(', ')}`);
-    } else if (totalScore >= 10) {
-        cardClass = "risk-high";
-        titleText = "🔴 Высокий риск (≥10 баллов)";
-        recsHtml = "<li>Немедленно информировать врача;</li><li>Провести внеплановый контроль витальных показателей;</li><li>Обеспечить усиленный мониторинг;</li><li>Повторить расчет риска после коррекции состояния.</li>";
-    } else if (totalScore >= 5) {
-        cardClass = "risk-mod";
-        titleText = "🟡 Умеренный риск (5–9 баллов)";
-        recsHtml = "<li>Усилить сестринский мониторинг;</li><li>Повторно оценить витальные показатели через 4–6 часов;</li><li>Повторно рассчитать риск через 4–6 часов;</li><li>Информировать врача при отрицательной динамике.</li>";
-    } else {
-        cardClass = "risk-low";
-        titleText = "🟢 Низкий риск (0–4 балла)";
-        recsHtml = "<li>Продолжить стандартное наблюдение;</li><li>Контролировать витальные показатели по графику;</li><li>Продолжить раннюю мобилизацию;</li><li>Повторная оценка риска через 12 часов.</li>";
-    }
-
-    // Заполнение итогового окна
-    document.getElementById('out_name').innerText = document.getElementById('p_name').value || "Не указано";
-    document.getElementById('out_room').innerText = document.getElementById('p_room').value || "-";
-    document.getElementById('out_diag').innerText = document.getElementById('p_diag').value || "-";
-    document.getElementById('out_days').innerText = document.getElementById('p_days').options[document.getElementById('p_days').selectedIndex].text;
-    document.getElementById('out_score').innerText = isSOS ? totalScore + " (SOS перекрывает баллы)" : totalScore;
-    document.getElementById('out_datetime').innerText = new Date().toLocaleString("ru-RU");
-    
-    document.getElementById('res_card').className = "mc-card " + cardClass;
-    document.getElementById('res_title').innerText = titleText;
-    document.getElementById('out_recs').innerHTML = recsHtml;
-
-    let factorsList = document.getElementById('out_factors');
-    factorsList.innerHTML = "";
-    if(riskFactors.length > 0) {
-        document.getElementById('out_factors_box').style.display = 'block';
-        riskFactors.forEach(f => {
-            let li = document.createElement('li');
-            li.innerHTML = f;
-            factorsList.appendChild(li);
+        // 4. Ручные SOS-чекбоксы
+        document.querySelectorAll('.manual-sos:checked').forEach(cb => {
+            isSOS = true;
+            sosReasons.push(cb.value);
         });
-    } else {
-        document.getElementById('out_factors_box').style.display = 'none';
+
+        // ФОРМИРОВАНИЕ ИТОГА
+        let cardClass = "";
+        let titleText = "";
+        let recsHtml = "";
+
+        if (isSOS) {
+            cardClass = "risk-sos";
+            titleText = "🚨 SOS-СОСТОЯНИЕ";
+            recsHtml = "<li>Срочно вызвать лечащего или дежурного врача;</li><li>Не оставлять пациента без наблюдения;</li><li>Проконтролировать АД, ЧСС, ЧДД, SpO₂, температуру;</li><li>Оценить рану, повязку и дренажи;</li><li>Подготовить пациента к срочному врачебному осмотру;</li><li>Действовать согласно локальным протоколам стационара.</li>";
+            riskFactors.push(`<strong>КРИТИЧЕСКИЕ ПРИЗНАКИ:</strong> ${sosReasons.join(', ')}`);
+        } else if (totalScore >= 10) {
+            cardClass = "risk-high";
+            titleText = "🔴 Высокий риск (≥10 баллов)";
+            recsHtml = "<li>Немедленно информировать лечащего/дежурного врача;</li><li>Провести внеплановый контроль витальных показателей;</li><li>Оценить состояние раны, повязки, дренажей;</li><li>Обеспечить усиленный мониторинг;</li><li>Повторить расчет риска после коррекции состояния.</li>";
+        } else if (totalScore >= 5) {
+            cardClass = "risk-mod";
+            titleText = "🟡 Умеренный риск (5–9 баллов)";
+            recsHtml = "<li>Усилить сестринский мониторинг;</li><li>Повторно оценить витальные показатели через 4–6 часов;</li><li>Проверить состояние раны, повязки и дренажей;</li><li>Оценить сон, аппетит, диурез, тревожность;</li><li>Повторно рассчитать риск через 4–6 часов.</li>";
+        } else {
+            cardClass = "risk-low";
+            titleText = "🟢 Низкий риск (0–4 балла)";
+            recsHtml = "<li>Продолжить стандартное послеоперационное наблюдение;</li><li>Контролировать витальные показатели по графику;</li><li>Оценивать боль по ВАШ, состояние раны;</li><li>Продолжить раннюю мобилизацию и дыхат. гимнастику;</li><li>Повторная оценка риска через 12 часов.</li>";
+        }
+
+        // Заполнение данных
+        document.getElementById('out_name').innerText = document.getElementById('p_name').value || "Не указано";
+        document.getElementById('out_room').innerText = document.getElementById('p_room').value || "-";
+        document.getElementById('out_diag').innerText = document.getElementById('p_diag').value || "-";
+        
+        let opType = document.querySelector('input[name="p_type"]:checked').value;
+        let intType = document.getElementById('p_int_type').value;
+        document.getElementById('out_op_type').innerText = `${opType}, ${intType}`;
+        
+        document.getElementById('out_days').innerText = document.getElementById('p_days').value;
+        document.getElementById('out_drains').innerText = document.querySelector('input[name="p_drains"]:checked').value === 'yes' ? "Есть" : "Нет";
+        
+        document.getElementById('out_score').innerText = isSOS ? totalScore + " (SOS перекрывает баллы)" : totalScore;
+        
+        let now = new Date();
+        document.getElementById('out_datetime').innerText = now.toLocaleString("ru-RU");
+
+        // Оформление карточки
+        let resCard = document.getElementById('res_card');
+        resCard.className = "result-card " + cardClass;
+        document.getElementById('res_title').innerText = titleText;
+        document.getElementById('out_recs').innerHTML = recsHtml;
+
+        // Факторы риска
+        let fBox = document.getElementById('factors-container');
+        let fList = document.getElementById('out_factors');
+        fList.innerHTML = "";
+        
+        if (riskFactors.length > 0) {
+            fBox.style.display = 'block';
+            riskFactors.forEach(f => {
+                let li = document.createElement('li');
+                li.innerHTML = f;
+                fList.appendChild(li);
+            });
+        } else {
+            fBox.style.display = 'none';
+        }
+
+        // Переключение экранов
+        document.getElementById('form-screen').style.display = 'none';
+        document.getElementById('main-title').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+        window.scrollTo(0,0);
     }
 
-    // Переключение экранов
-    document.getElementById('mc-form').style.display = 'none';
-    document.getElementById('mc-result').style.display = 'block';
-    window.scrollTo(0,0);
-}
-
-function resetForm() {
-    document.getElementById('mc-form').reset();
-    document.getElementById('mc-result').style.display = 'none';
-    document.getElementById('mc-form').style.display = 'block';
-    toggleDrains();
-    window.scrollTo(0,0);
-}
+    function resetForm() {
+        document.getElementById('form-screen').reset();
+        document.getElementById('result-screen').style.display = 'none';
+        document.getElementById('form-screen').style.display = 'block';
+        document.getElementById('main-title').style.display = 'block';
+        toggleDrains();
+        window.scrollTo(0,0);
+    }
 </script>
+
+</body>
+</html>
